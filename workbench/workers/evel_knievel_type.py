@@ -1,5 +1,7 @@
 
 ''' EvelKnievelType worker '''
+from __future__ import absolute_import
+from __future__ import print_function
 import hashlib
 import magic
 import pprint
@@ -18,7 +20,7 @@ class EvelKnievelType(object):
         ''' This worker pseudo-randomly throws a TypeError Exception. '''
         md5 = input_data['meta']['md5']
         if not (int(md5,16) % 15):
-            print '%d' % md5
+            print('%d' % md5)
             return {'Evel': 'fail'}
 
         return {'Evel':'success'}
@@ -47,12 +49,12 @@ def test():
     # Execute the worker (unit test)
     worker = EvelKnievelType()
     output = worker.execute(input_data)
-    print '\n<<< Unit Test >>>'
+    print('\n<<< Unit Test >>>')
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('evel_knievel_type', md5)
-    print '\n<<< Server Test >>>'
+    print('\n<<< Server Test >>>')
     pprint.pprint(output)
 
 if __name__ == "__main__":

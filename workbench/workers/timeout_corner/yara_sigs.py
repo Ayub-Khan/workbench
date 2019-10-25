@@ -1,10 +1,13 @@
 
 ''' Yara worker '''
+from __future__ import absolute_import
+from __future__ import print_function
 import zerorpc
 import os
 import yara
 import pprint
 import collections
+import six
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -30,7 +33,7 @@ class YaraSigs(object):
         if not samples:
             return None
         elif len(samples)>1:
-            print 'Error: More than one yara rule set!'
+            print('Error: More than one yara rule set!')
             exit(1)
         else:
             return yara.load(self.workbench.get_sample[samples[0]])
@@ -81,7 +84,7 @@ class YaraSigs(object):
         # So we're going to flatten a bit (shrug)
         # {filename_match_meta_description: string_list}
         flat_data = collections.defaultdict(list)
-        for filename, match_list in matches.iteritems():
+        for filename, match_list in six.iteritems(matches):
             for match in match_list:
                 if 'description' in match['meta']:
                     new_tag = filename+'_'+match['meta']['description']
@@ -118,12 +121,12 @@ def test():
     # Execute the worker (unit test)
     worker = YaraSigs()
     output = worker.execute(input_data)
-    print '\n<<< Unit Test >>>'
+    print('\n<<< Unit Test >>>')
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('yara_sigs', md5)
-    print '\n<<< Server Test >>>'
+    print('\n<<< Server Test >>>')
     pprint.pprint(output)
 
 if __name__ == "__main__":

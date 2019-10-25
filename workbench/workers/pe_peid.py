@@ -1,4 +1,6 @@
 ''' PE peid worker, uses the peid_userdb.txt database of signatures '''
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import peutils
 import pefile
@@ -35,7 +37,7 @@ class PEIDWorker(object):
         # Have the PE File module process the file
         try:
             pefile_handle = pefile.PE(data=raw_bytes, fast_load=False)
-        except (AttributeError, pefile.PEFormatError), error:
+        except (AttributeError, pefile.PEFormatError) as error:
             return {'error':  str(error), 'match_list': []}
 
         # Now get information from PEID module
@@ -67,12 +69,12 @@ def test():
     # Execute the worker (unit test)
     worker = PEIDWorker()
     output = worker.execute(input_data)
-    print '\n<<< Unit Test >>>'
+    print('\n<<< Unit Test >>>')
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('pe_peid', md5)
-    print '\n<<< Server Test >>>'
+    print('\n<<< Server Test >>>')
     pprint.pprint(output)
 
 if __name__ == "__main__":

@@ -1,5 +1,7 @@
 
 ''' view_swf_deep worker '''
+from __future__ import absolute_import
+from __future__ import print_function
 import pprint
 
 class ViewSWFDeep(object):
@@ -28,12 +30,12 @@ def test():
     # Execute the worker (unit test)
     worker = ViewSWFDeep()
     output = worker.execute(input_data)
-    print '\n<<< Unit Test >>>'
+    print('\n<<< Unit Test >>>')
     pprint.pprint(output)
     
     # Execute the worker (server test)
     output = workbench.work_request('view_swf_deep', md5)
-    print '\n<<< Server Test >>>'
+    print('\n<<< Server Test >>>')
     pprint.pprint(output)
 
 if __name__ == "__main__":

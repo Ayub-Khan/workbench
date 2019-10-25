@@ -1,5 +1,7 @@
 
 ''' This connects to the workbench server and tells it to clear the database..whee...'''
+from __future__ import absolute_import
+from __future__ import print_function
 import zerorpc
 
 if __name__ == "__main__":
@@ -8,4 +10,4 @@ if __name__ == "__main__":
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect("tcp://127.0.0.1:4242")
     workbench.clear_db()
-    print 'Database completely wiped... Whee!'
+    print('Database completely wiped... Whee!')

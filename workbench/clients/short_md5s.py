@@ -1,9 +1,10 @@
 """This client tests workbench support for short md5s """
 
+from __future__ import absolute_import
 import zerorpc
 import os
 import pprint
-import client_helper
+from . import client_helper
 
 def run():
     """This client tests workbench support for short md5s """

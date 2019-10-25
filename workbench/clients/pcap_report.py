@@ -1,9 +1,10 @@
 """This client pulls PCAP 'views' (view summarize what's in a sample)."""
 
+from __future__ import absolute_import
 import zerorpc
 import os
 import pprint
-import client_helper
+from . import client_helper
 import flask
 
 STATIC_DIR = os.path.join(os.path.dirname(

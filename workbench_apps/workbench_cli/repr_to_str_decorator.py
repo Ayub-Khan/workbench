@@ -1,6 +1,7 @@
 """ repr_to_str_decorator gets around IPython wanting to take the
 # __repr__ of string output instead of __str__. """
 
+from __future__ import absolute_import
 import functools
 
 def r_to_s(func):

@@ -1,6 +1,8 @@
 ''' This client calls a bunch of help commands from workbench '''
+from __future__ import absolute_import
+from __future__ import print_function
 import zerorpc
-import client_helper
+from . import client_helper
 
 def run():
     ''' This client calls a bunch of help commands from workbench '''
@@ -13,15 +15,15 @@ def run():
     workbench.connect('tcp://'+args['server']+':'+args['port'])
 
     # Call help methods
-    print workbench.help()
-    print workbench.help('basic')
-    print workbench.help('commands')
-    print workbench.help('store_sample')
-    print workbench.help('workers')
-    print workbench.help('meta')
+    print(workbench.help())
+    print(workbench.help('basic'))
+    print(workbench.help('commands'))
+    print(workbench.help('store_sample'))
+    print(workbench.help('workers'))
+    print(workbench.help('meta'))
 
     # Call a test worker
-    print workbench.test_worker('meta')
+    print(workbench.test_worker('meta'))
     
 
 def test():

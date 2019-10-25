@@ -1,5 +1,7 @@
 
 ''' PE Disass worker '''
+from __future__ import absolute_import
+from __future__ import print_function
 from disass.Disass32 import Disass32
 
 def plugin_info():
@@ -13,7 +15,7 @@ class Disass():
         raw_bytes = input_data['sample']['raw_bytes']
         try:
             disass = Disass32(data=raw_bytes)
-        except Exception, error:
+        except Exception as error:
             return {'decode': [str(error)]}
         return {'decode': disass.decode}
 
@@ -24,7 +26,7 @@ def test():
     worker = Disass()
     output = worker.execute({'sample': 
         {'raw_bytes':open('../data/pe/bad/033d91aae8ad29ed9fbb858179271232', 'rb').read()}})
-    print 'Disass: %s ' % str(output['decode'][:50])  # Truncate for now
+    print('Disass: %s ' % str(output['decode'][:50]))  # Truncate for now
 
 if __name__ == "__main__":
     test()

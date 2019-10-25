@@ -4,9 +4,11 @@
    3) I kinda wanted to understand the process :)
 """
 
+from __future__ import absolute_import
+from __future__ import print_function
 import os, sys
 from datetime import datetime
-import dir_watcher
+from . import dir_watcher
 import inspect
 from IPython.utils.coloransi import TermColors as color
 #pylint: disable=no-member
@@ -38,7 +40,7 @@ class PluginManager(object):
         # Go through the existing python files in the plugin directory
         self.plugin_path = os.path.realpath(self.plugin_dir)
         sys.path.append(self.plugin_dir)
-        print '<<< Plugin Manager >>>'
+        print('<<< Plugin Manager >>>')
         for f in [os.path.join(self.plugin_dir, child) for child in os.listdir(self.plugin_dir)]:
 
             # Skip certain files
@@ -83,9 +85,9 @@ class PluginManager(object):
         """
         if f.endswith('.py'):
             plugin_name = os.path.splitext(os.path.basename(f))[0]
-            print '- %s %sREMOVED' % (plugin_name, color.Red)
-            print '\t%sNote: still in memory, restart Workbench to remove...%s' % \
-                  (color.Yellow, color.Normal)
+            print('- %s %sREMOVED' % (plugin_name, color.Red))
+            print('\t%sNote: still in memory, restart Workbench to remove...%s' % \
+                  (color.Yellow, color.Normal))
 
     def add_plugin(self, f):
         """Adding and verifying plugin.
@@ -102,21 +104,21 @@ class PluginManager(object):
             if plugin_name in sys.modules:
                 try:
                     handler = reload(sys.modules[plugin_name])
-                    print'\t- %s %sRELOAD%s' % (plugin_name, color.Yellow, color.Normal)
-                except ImportError, error:
-                    print 'Failed to import plugin: %s (%s)' % (plugin_name, error)
+                    print('\t- %s %sRELOAD%s' % (plugin_name, color.Yellow, color.Normal))
+                except ImportError as error:
+                    print('Failed to import plugin: %s (%s)' % (plugin_name, error))
                     return
             else:
                 # Not already loaded so try to import it
                 try:
                     handler = __import__(plugin_name, globals(), locals(), [], -1)
-                except ImportError, error:
-                    print 'Failed to import plugin: %s (%s)' % (plugin_name, error)
+                except ImportError as error:
+                    print('Failed to import plugin: %s (%s)' % (plugin_name, error))
                     return
 
             # Run the handler through plugin validation
             plugin = self.validate(handler)
-            print '\t- %s %sOK%s' % (plugin_name, color.Green, color.Normal)
+            print('\t- %s %sOK%s' % (plugin_name, color.Green, color.Normal))
             if plugin:
 
                 # Okay must be successfully loaded so capture the plugin meta-data,
@@ -157,8 +159,8 @@ class PluginManager(object):
                 return {'class':plugin_class, 'test':test_method}
 
         # If we're here the plugin didn't pass validation
-        print 'Failure for plugin: %s' % (handler.__name__)
-        print 'Validation Error: Worker class is required to have a dependencies list and an execute method'
+        print('Failure for plugin: %s' % (handler.__name__))
+        print('Validation Error: Worker class is required to have a dependencies list and an execute method')
         return None
 
     def plugin_test_validation(self, handler):
@@ -173,9 +175,9 @@ class PluginManager(object):
             None if the test fails or the test function.
         """
         methods = {name:func for name, func in inspect.getmembers(handler, callable)}
-        if 'test' not in methods.keys():
-            print 'Failure for plugin: %s' % (handler.__name__)
-            print 'Validation Error: The file must have a top level test() method'
+        if 'test' not in list(methods.keys()):
+            print('Failure for plugin: %s' % (handler.__name__))
+            print('Validation Error: The file must have a top level test() method')
             return None
         else:
             return methods['test']
@@ -210,7 +212,7 @@ def test():
     # will get scanned and stuff will get loaded into workbench.
     def new_plugin(plugin):
         """new plugin callback """
-        print '%s' % (plugin['name'])
+        print('%s' % (plugin['name']))
 
     # Create Plugin Manager
     plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../workers')

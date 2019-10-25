@@ -1,6 +1,7 @@
 """ A simple directory watcher 
     Credit: ronedg @ http://stackoverflow.com/questions/182197/how-do-i-watch-a-file-for-changes-using-python
 """
+from __future__ import absolute_import
 import os, time
 import gevent
 
@@ -38,8 +39,8 @@ class DirWatcher(object):
             gevent.sleep(1)
             after = self._file_timestamp_info(self.path)
 
-            added = [fname for fname in after.keys() if fname not in before.keys()]
-            removed = [fname for fname in before.keys() if fname not in after.keys()]
+            added = [fname for fname in after.keys() if fname not in list(before.keys())]
+            removed = [fname for fname in before.keys() if fname not in list(after.keys())]
             modified = []
 
             for fname in before.keys():

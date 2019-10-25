@@ -1,7 +1,9 @@
 """File Streaming for Workbench CLI"""
 
+from __future__ import absolute_import
 import os, sys
 import lz4
+from six.moves import range
 
 class FileStreamer(object):
     """File Streaming for Workbench CLI"""
@@ -23,7 +25,7 @@ class FileStreamer(object):
 
     def _file_chunks(self, data, chunk_size):
         """ Yield compressed chunks from a data array"""
-        for i in xrange(0, len(data), chunk_size):
+        for i in range(0, len(data), chunk_size):
             yield self.compressor(data[i:i+chunk_size])
 
     def stream_to_workbench(self, raw_bytes, filename, type_tag, tags):

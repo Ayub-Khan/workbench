@@ -5,11 +5,14 @@
     Note: In general this code is crazy, because Rekall has it's own type system
           we're scraping it's output and trying to squeeze stuff into general python types.
 '''
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import hashlib
 import pprint
 import collections
-from rekall_adapter.rekall_adapter import RekallAdapter
+from .rekall_adapter.rekall_adapter import RekallAdapter
+import six
 
 
 class MemoryImageMeta(object):
@@ -46,7 +49,7 @@ class MemoryImageMeta(object):
                 row = RekallAdapter.process_row(line['data'], self.column_map)
                 self.output['tables'][self.current_table_name].append(row)
             else:
-                print 'Note: Ignoring rekall message of type %s: %s' % (line['type'], line['data'])
+                print('Note: Ignoring rekall message of type %s: %s' % (line['type'], line['data']))
 
         # All done
         return self.output
@@ -75,19 +78,19 @@ def test():
     # Execute the worker (unit test)
     worker = MemoryImageMeta()
     output = worker.execute({'sample':{'raw_bytes':raw_bytes}})
-    print '\n<<< Unit Test >>>'
-    print 'Meta: %s' % output['meta']
-    for name, table in output['tables'].iteritems():
-        print '\nTable: %s' % name
+    print('\n<<< Unit Test >>>')
+    print('Meta: %s' % output['meta'])
+    for name, table in six.iteritems(output['tables']):
+        print('\nTable: %s' % name)
         pprint.pprint(table)
     assert 'Error' not in output
 
     # Execute the worker (server test)
     output = workbench.work_request('mem_meta', md5)['mem_meta']
-    print '\n<<< Server Test >>>'
-    print 'Meta: %s' % output['meta']
-    for name, table in output['tables'].iteritems():
-        print '\nTable: %s' % name
+    print('\n<<< Server Test >>>')
+    print('Meta: %s' % output['meta'])
+    for name, table in six.iteritems(output['tables']):
+        print('\nTable: %s' % name)
         pprint.pprint(table)
     assert 'Error' not in output
 

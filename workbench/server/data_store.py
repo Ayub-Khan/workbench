@@ -1,11 +1,14 @@
 """DataStore class for WorkBench."""
 
+from __future__ import absolute_import
+from __future__ import print_function
 import pymongo
 import gridfs
 import hashlib
 import datetime
 import bson
 import time
+import six
 
 class DataStore(object):
     """DataStore for Workbench. 
@@ -42,7 +45,7 @@ class DataStore(object):
         self.last_ops_run = time.time()
         self.periodic_ops()
 
-        print '\t- WorkBench DataStore connected: %s:%s' % (self.uri, self.database_name)
+        print('\t- WorkBench DataStore connected: %s:%s' % (self.uri, self.database_name))
 
     def get_uri(self):
         """ Return the uri of the data store."""
@@ -62,7 +65,7 @@ class DataStore(object):
 
         # Temp sanity check for old clients
         if len(filename) > 1000:
-            print 'switched bytes/filename... %s %s' % (sample_bytes[:100], filename[:100])
+            print('switched bytes/filename... %s %s' % (sample_bytes[:100], filename[:100]))
             exit(1)
 
         sample_info = {}
@@ -96,7 +99,7 @@ class DataStore(object):
         self.database[self.sample_collection].insert(sample_info)
 
         # Print info
-        print 'Sample Storage: %.2f out of %.2f MB' % (self.sample_storage_size(), self.samples_cap)
+        print('Sample Storage: %.2f out of %.2f MB' % (self.sample_storage_size(), self.samples_cap))
 
         # Return the sample md5
         return sample_info['md5']
@@ -130,12 +133,12 @@ class DataStore(object):
             return
 
         # Delete it
-        print 'Deleting sample: %s (%.2f MB)...' % (record['md5'], record['length']/1024.0/1024.0)
+        print('Deleting sample: %s (%.2f MB)...' % (record['md5'], record['length']/1024.0/1024.0))
         self.database[self.sample_collection].remove({'md5': record['md5']})
         self.gridfs_handle.delete(record['__grid_fs'])
 
         # Print info
-        print 'Sample Storage: %.2f out of %.2f MB' % (self.sample_storage_size(), self.samples_cap)
+        print('Sample Storage: %.2f out of %.2f MB' % (self.sample_storage_size(), self.samples_cap))
 
     def clean_for_serialization(self, data):
         """Clean data in preparation for serialization.
@@ -195,7 +198,7 @@ class DataStore(object):
 
     def get_full_md5(self, partial_md5, collection):
         """Support partial/short md5s, return the full md5 with this method"""
-        print 'Notice: Performing slow md5 search...'
+        print('Notice: Performing slow md5 search...')
         starts_with = '%s.*' % partial_md5
         sample_info = self.database[collection].find_one({'md5': {'$regex' : starts_with}},{'md5':1})
         return sample_info['md5'] if sample_info else None
@@ -299,7 +302,7 @@ class DataStore(object):
             List of the md5s for the matching samples
         """
         if 'tags' not in self.database.collection_names():
-            print 'Warning: Searching on non-existance tags collection'
+            print('Warning: Searching on non-existance tags collection')
             return None
         if not tags:
             cursor = self.database['tags'].find({}, {'_id':0, 'md5':1})
@@ -321,7 +324,7 @@ class DataStore(object):
             List of the tags and md5s for all samples
         """
         if 'tags' not in self.database.collection_names():
-            print 'Warning: Searching on non-existance tags collection'
+            print('Warning: Searching on non-existance tags collection')
             return None
 
         cursor = self.database['tags'].find({}, {'_id':0, 'md5':1, 'tags':1})
@@ -352,8 +355,8 @@ class DataStore(object):
             self.database[collection].update({'md5':md5}, self.clean_for_storage(results), True)
         except pymongo.errors.OperationFailure:
             #self.database[collection].insert({'md5':md5}, self.clean_for_storage(results), True)
-            print 'Could not update exising object in capped collection, punting...'
-            print 'collection: %s md5:%s' % (collection, md5)
+            print('Could not update exising object in capped collection, punting...')
+            print('collection: %s md5:%s' % (collection, md5))
 
     def get_work_results(self, collection, md5):
         """Get the results of the worker.
@@ -381,12 +384,12 @@ class DataStore(object):
             cursor = self.database[self.sample_collection].find({'type_tag': type_tag}, {'md5': 1, '_id': 0})
         else:
             cursor = self.database[self.sample_collection].find({}, {'md5': 1, '_id': 0})
-        return [match.values()[0] for match in cursor]
+        return [list(match.values())[0] for match in cursor]
 
     def clear_worker_output(self):
         """Drops all of the worker output collections"""
         
-        print 'Dropping all of the worker output collections... Whee!'
+        print('Dropping all of the worker output collections... Whee!')
         # Get all the collections in the workbench database
         all_c = self.database.collection_names()
 
@@ -399,7 +402,7 @@ class DataStore(object):
             all_c.remove('tags')
             all_c.remove(self.sample_collection)
         except ValueError:
-            print 'Catching a benign exception thats expected...'
+            print('Catching a benign exception thats expected...')
 
         for collection in all_c:
             self.database.drop_collection(collection)
@@ -407,7 +410,7 @@ class DataStore(object):
     def clear_db(self):
         """Drops the entire workbench database."""
         
-        print 'Dropping the entire workbench database... Whee!'
+        print('Dropping the entire workbench database... Whee!')
         self.mongo.drop_database(self.database_name)
 
     def periodic_ops(self):
@@ -424,7 +427,7 @@ class DataStore(object):
 
             # Reset last ops run
             self.last_ops_run = time.time()
-            print 'Running Periodic Ops'
+            print('Running Periodic Ops')
 
             # Get all the collections in the workbench database
             all_c = self.database.collection_names()
@@ -438,7 +441,7 @@ class DataStore(object):
                 all_c.remove('tags')
                 all_c.remove(self.sample_collection)
             except ValueError:
-                print 'Catching a benign exception thats expected...'
+                print('Catching a benign exception thats expected...')
 
             # Convert collections to capped if desired
             if self.worker_cap:
@@ -461,10 +464,10 @@ class DataStore(object):
         # the autoreconnect means that some operations didn't get executed but
         # because this method gets called every 30 seconds no biggy...
         except pymongo.errors.AutoReconnect as e:
-            print 'Warning: MongoDB raised an AutoReconnect...' % e
+            print('Warning: MongoDB raised an AutoReconnect...' % e)
             return
         except Exception as e:
-            print 'Critical: MongoDB raised an exception' % e
+            print('Critical: MongoDB raised an exception' % e)
             return
 
     # Helper functions
@@ -479,10 +482,10 @@ class DataStore(object):
         """
 
         # Fixme: This is total horseshit
-        if isinstance(s, unicode):
+        if isinstance(s, six.text_type):
             return s
         if isinstance(s, str):
-            return unicode(s, errors='ignore')
+            return six.text_type(s, errors='ignore')
 
         # Just return the original object
         return s
@@ -497,7 +500,7 @@ class DataStore(object):
             Unicoded data.
         """
         if isinstance(data, dict):
-            return {self.to_unicode(k): self.to_unicode(v) for k, v in data.iteritems()}
+            return {self.to_unicode(k): self.to_unicode(v) for k, v in six.iteritems(data)}
         if isinstance(data, list):
             return [self.to_unicode(l) for l in data]
         else:

@@ -48,3 +48,6 @@ config.ini
 
 # Ignore pulled data 
 workbench/data/memory_images
+
+#ignore
+data

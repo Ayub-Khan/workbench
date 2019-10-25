@@ -3,11 +3,14 @@
     See Google Github: http://github.com/google/rekall
     All credit for good stuff goes to them, all credit for bad stuff goes to us. :)
 '''
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import hashlib
 import collections
 import pprint
-from rekall_adapter.rekall_adapter import RekallAdapter
+from .rekall_adapter.rekall_adapter import RekallAdapter
+import six
 
 
 class MemoryImagePSList(object):
@@ -86,19 +89,19 @@ def test():
     # Execute the worker (unit test)
     worker = MemoryImagePSList()
     output = worker.execute({'sample':{'raw_bytes':raw_bytes}})
-    print '\n<<< Unit Test >>>'
-    print 'Meta: %s' % output['meta']
-    for name, table in output['tables'].iteritems():
-        print '\nTable: %s' % name
+    print('\n<<< Unit Test >>>')
+    print('Meta: %s' % output['meta'])
+    for name, table in six.iteritems(output['tables']):
+        print('\nTable: %s' % name)
         pprint.pprint(table)
     assert 'Error' not in output
 
     # Execute the worker (server test)
     output = workbench.work_request('mem_pslist', md5)['mem_pslist']
-    print '\n<<< Server Test >>>'
-    print 'Meta: %s' % output['meta']
-    for name, table in output['tables'].iteritems():
-        print '\nTable: %s' % name
+    print('\n<<< Server Test >>>')
+    print('Meta: %s' % output['meta'])
+    for name, table in six.iteritems(output['tables']):
+        print('\nTable: %s' % name)
         pprint.pprint(table)
     assert 'Error' not in output
 

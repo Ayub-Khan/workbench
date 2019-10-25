@@ -1,7 +1,10 @@
 """Workbench Interactive Shell Help Content"""
 
+from __future__ import absolute_import
+from __future__ import print_function
 import inspect
 from IPython.utils.coloransi import TermColors as color
+import six
 #pylint: disable=no-member
 
 class WorkbenchShellHelp(object):
@@ -108,9 +111,9 @@ def test():
     help = WorkbenchShellHelp()
 
     # Now execute all the help methods
-    for name, method in help._all_help_methods().iteritems():
-        print '\n%s%s%s' % (color.Red, name, color.Normal)
-        print '%s' % method()
+    for name, method in six.iteritems(help._all_help_methods()):
+        print('\n%s%s%s' % (color.Red, name, color.Normal))
+        print('%s' % method())
 
 if __name__ == '__main__':
     test()

@@ -1,6 +1,8 @@
 
 ''' view_pcap_meta worker '''
 
+from __future__ import absolute_import
+from __future__ import print_function
 def plugin_info():
     return {'name':'view_pcap_meta', 'class':'ViewPcap', 'dependencies': ['pcap_meta'],
             'description': 'This worker generates a pcap view for the sample. Output keys: [import_time, entropy, file_size, summary, sessions]'}
@@ -24,7 +26,7 @@ def test():
 
     md5 = workbench.store_sample(open('../data/pcap/http.pcap', 'rb').read(), 'http.pcap', 'pcap')
     output = workbench.work_request('view_pcap_meta', md5)
-    print 'ViewPcap: '
+    print('ViewPcap: ')
     import pprint
     pprint.pprint(output)
 

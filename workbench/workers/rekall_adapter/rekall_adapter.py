@@ -5,6 +5,8 @@
 """
 
 
+from __future__ import absolute_import
+from __future__ import print_function
 import os, sys
 import logging
 from rekall import session as rekall_session
@@ -16,6 +18,7 @@ import datetime
 import pprint
 import pytz
 import gevent
+import six
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -23,7 +26,7 @@ except ImportError:
 
 def gsleep():
     ''' Convenience method for gevent.sleep '''
-    print '*** Gevent Sleep ***'
+    print('*** Gevent Sleep ***')
     gevent.sleep(0)
 
 class RekallAdapter(object):
@@ -59,7 +62,7 @@ class RekallAdapter(object):
     def process_row(cls, data, column_map):
         """Process the row data from Rekall"""
         row = {}
-        for key,value in data.iteritems():
+        for key,value in six.iteritems(data):
             if not value:
                 value = '-'                
             elif isinstance(value, list):
@@ -162,14 +165,14 @@ def test():
     # Do we have the memory forensics file?
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/memory_images/exemplar4.vmem')
     if not os.path.isfile(data_path):
-        print 'Not finding exemplar4.mem... Downloading now...'
-        import urllib
-        urllib.urlretrieve('http://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem', data_path)
+        print('Not finding exemplar4.mem... Downloading now...')
+        import six.moves.urllib.request, six.moves.urllib.parse, six.moves.urllib.error
+        six.moves.urllib.request.urlretrieve('http://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem', data_path)
 
     # Did we properly download the memory file?
     if not os.path.isfile(data_path):
-        print 'Downloading failed, try it manually...'
-        print 'wget http://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem'
+        print('Downloading failed, try it manually...')
+        print('wget http://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem')
         exit(1)
 
     # Store the sample
@@ -180,7 +183,7 @@ def test():
 
     # Execute the adapter (unit test)
     adapter = RekallAdapter()
-    print '\n<<< Unit Test >>>'
+    print('\n<<< Unit Test >>>')
     adapter.set_plugin_name('imageinfo')
     output = adapter.execute(input_data)
     pprint.pprint(output)

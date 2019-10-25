@@ -1,9 +1,11 @@
 
 ''' VTQuery worker '''
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import requests
 import collections
-import ConfigParser
+import six.moves.configparser
 import pprint
 
 class VTQuery(object):
@@ -15,7 +17,7 @@ class VTQuery(object):
 
         # Grab API key from configuration file
         config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../server/config.ini')
-        conf = ConfigParser.ConfigParser()
+        conf = six.moves.configparser.ConfigParser()
         conf.read(config_path)
         self.apikey = conf.get('workbench', 'vt_apikey')
 
@@ -81,12 +83,12 @@ def test():
     # Execute the worker (unit test)
     worker = VTQuery()
     output = worker.execute(input_data)
-    print '\n<<< Unit Test >>>'
+    print('\n<<< Unit Test >>>')
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('vt_query', md5)
-    print '\n<<< Server Test >>>'
+    print('\n<<< Server Test >>>')
     pprint.pprint(output)
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@
 Tests for `workbench` module.
 """
 
+from __future__ import absolute_import
 import zerorpc
 import pytest
 import workbench_singleton # This spins up the server

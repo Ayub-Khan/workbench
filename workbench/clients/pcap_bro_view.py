@@ -1,9 +1,11 @@
 """This client pulls PCAP 'views' (view summarize what's in a sample)."""
 
+from __future__ import absolute_import
+from __future__ import print_function
 import zerorpc
 import os
 import pprint
-import client_helper
+from . import client_helper
 
 def run():
     """This client pulls PCAP 'views' (view summarize what's in a sample)."""
@@ -30,7 +32,7 @@ def run():
             base_name = os.path.basename(filename)
             md5 = workbench.store_sample(f.read(), base_name, 'pcap')
             results = workbench.work_request('view_pcap', md5)
-            print '\n<<< %s >>>' % base_name
+            print('\n<<< %s >>>' % base_name)
             pprint.pprint(results)
 
 def test():

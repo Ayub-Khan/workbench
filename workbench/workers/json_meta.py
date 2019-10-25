@@ -1,5 +1,7 @@
 
 ''' JSON Meta worker '''
+from __future__ import absolute_import
+from __future__ import print_function
 import json
 import pprint
 
@@ -20,7 +22,7 @@ class JSONMetaData(object):
         if self.meta['container'] == 'list':
             self.meta['list_length'] = len(data)
         else:
-            self.meta['num_keys'] = len(data.keys())
+            self.meta['num_keys'] = len(list(data.keys()))
 
         # Pull in meta data info as well
         self.meta.update(input_data['meta'])
@@ -46,12 +48,12 @@ def test():
     # Execute the worker (unit test)
     worker = JSONMetaData()
     output = worker.execute(input_data)
-    print '\n<<< Unit Test >>>'
+    print('\n<<< Unit Test >>>')
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('json_meta', md5)
-    print '\n<<< Server Test >>>'
+    print('\n<<< Server Test >>>')
     pprint.pprint(output)
 
 if __name__ == "__main__":

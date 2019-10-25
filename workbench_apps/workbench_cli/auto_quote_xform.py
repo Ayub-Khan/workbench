@@ -1,6 +1,7 @@
 """ AutoQuoteTransformer: IPython Transformer so we can shortcut
     Workbench commands by using 'auto-quotes' """
 
+from __future__ import absolute_import
 import re
 from IPython.core.prefilter import PrefilterTransformer
 

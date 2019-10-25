@@ -1,8 +1,12 @@
 ''' PE Features worker. This class pulls static features
     out of a PE file using the python pefile module.
 '''
+from __future__ import absolute_import
+from __future__ import print_function
 import pefile
 import pprint
+import six
+from six.moves import range
 
 
 class PEFileWorker(object):
@@ -94,14 +98,14 @@ class PEFileWorker(object):
         ''' Open the PE File using the Python pefile module. '''
         try:
             pef = pefile.PE(data=input_bytes, fast_load=False)
-        except (AttributeError, pefile.PEFormatError), error:
-            print 'warning: pe_fail (with exception from pefile module) on file: %s' % input_name
+        except (AttributeError, pefile.PEFormatError) as error:
+            print('warning: pe_fail (with exception from pefile module) on file: %s' % input_name)
             error_str = '(Exception):, %s' % (str(error))
             return None, error_str
 
         # Now test to see if the features are there/extractable if not return FAIL flag
         if pef.PE_TYPE is None or pef.OPTIONAL_HEADER is None or len(pef.OPTIONAL_HEADER.DATA_DIRECTORY) < 7:
-            print 'warning: pe_fail on file: %s' % input_name
+            print('warning: pe_fail on file: %s' % input_name)
             error_str = 'warning: pe_fail on file: %s' % input_name
             return None, error_str
 
@@ -290,14 +294,14 @@ class PEFileWorker(object):
             if extracted_dense[feature] == feature_not_found_flag:
                 extracted_dense[feature] = feature_default_value
                 if (self._verbose):
-                    print 'info: Feature: %s not found! Setting to %d' % (feature, feature_default_value)
+                    print('info: Feature: %s not found! Setting to %d' % (feature, feature_default_value))
 
         # Issue a warning if the feature isn't found
         for feature in self._sparse_feature_list:
             if extracted_sparse[feature] == feature_not_found_flag:
                 extracted_sparse[feature] = []  # For sparse data probably best default
                 if (self._verbose):
-                    print 'info: Feature: %s not found! Setting to %d' % (feature, feature_default_value)
+                    print('info: Feature: %s not found! Setting to %d' % (feature, feature_default_value))
 
         # Set the features for the class var
         self._dense_features = extracted_dense
@@ -308,10 +312,10 @@ class PEFileWorker(object):
 # Helper functions
 def convert_to_utf8(string):
     ''' Convert string to UTF8 '''
-    if (isinstance(string, unicode)):
+    if (isinstance(string, six.text_type)):
         return string.encode('utf-8')
     try:
-        u = unicode(string, 'utf-8')
+        u = six.text_type(string, 'utf-8')
     except TypeError:
         return str(string)
     utf8 = u.encode('utf-8')
@@ -349,7 +353,7 @@ def test():
     # Execute the worker (unit test)
     worker = PEFileWorker()
     output = worker.execute(input_data)
-    print '\n<<< Unit Test >>>'
+    print('\n<<< Unit Test >>>')
     pprint.pprint(output)    
 
     # For code coverage
@@ -358,7 +362,7 @@ def test():
 
     # Execute the worker (server test)
     output = workbench.work_request('pe_features', md5)
-    print '\n<<< Server Test >>>'
+    print('\n<<< Server Test >>>')
     pprint.pprint(output)
 
 

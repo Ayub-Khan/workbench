@@ -1,4 +1,6 @@
 ''' PcapBro worker '''
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import tempfile
 import contextlib
@@ -11,7 +13,7 @@ import gevent
 
 def gsleep():
     ''' Convenience method for gevent.sleep '''
-    print '*** Gevent Sleep ***'
+    print('*** Gevent Sleep ***')
     gevent.sleep(0)
 
 class PcapBro(object):
@@ -61,7 +63,7 @@ class PcapBro(object):
         with self.goto_temp_directory() as temp_dir:
 
             # Get the pcap inputs (filenames)
-            print 'pcap_bro: Setting up PCAP inputs...'
+            print('pcap_bro: Setting up PCAP inputs...')
             filenames = self.setup_pcap_inputs(input_data)
             command_line = ['bro']
             for filename in filenames:
@@ -70,12 +72,12 @@ class PcapBro(object):
                 command_line.append(script_path)
 
             # Execute command line as a subprocess
-            print 'pcap_bro: Executing subprocess...'
+            print('pcap_bro: Executing subprocess...')
             self.subprocess_manager(command_line)
 
             # Scrape up all the output log files
             gsleep()
-            print 'pcap_bro: Scraping output logs...'
+            print('pcap_bro: Scraping output logs...')
             my_output = {}
             for output_log in glob.glob('*.log'):
 
@@ -87,7 +89,7 @@ class PcapBro(object):
 
             # Scrape any extracted files
             gsleep()
-            print 'pcap_bro: Scraping extracted files...'
+            print('pcap_bro: Scraping extracted files...')
             my_output['extracted_files'] = []
             for output_file in glob.glob('extract_files/*'):
 
@@ -118,7 +120,7 @@ class PcapBro(object):
             raise RuntimeError('Could not run bro executable (either not installed or not in path): %s' % (exec_args))
         out, err = sp.communicate()
         if out:
-            print 'standard output of subprocess: %s' % out
+            print('standard output of subprocess: %s' % out)
         if err:
             raise RuntimeError('%s\npcap_bro had output on stderr: %s' % (exec_args, err))
         if sp.returncode:
@@ -159,12 +161,12 @@ def test():
     # Execute the worker (unit test)
     worker = PcapBro()
     output = worker.execute(input_data)
-    print '\n<<< Unit Test >>>'
+    print('\n<<< Unit Test >>>')
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('pcap_bro', md5)
-    print '\n<<< Server Test >>>'
+    print('\n<<< Server Test >>>')
     pprint.pprint(output)
 
     # Open a bunch of pcaps
@@ -183,16 +185,16 @@ def test():
 
     # Now store the sample set
     set_md5 = workbench.store_sample_set(pcap_md5s)
-    print set_md5
+    print(set_md5)
 
     # Execute the worker (unit test)
     output = worker.execute({'sample_set': {'md5_list': pcap_md5s}})
-    print '\n<<< Unit Test >>>'
+    print('\n<<< Unit Test >>>')
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('pcap_bro', set_md5)
-    print '\n<<< Server Test >>>'
+    print('\n<<< Server Test >>>')
     pprint.pprint(output)
 
 if __name__ == "__main__":

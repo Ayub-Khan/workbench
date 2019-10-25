@@ -1,6 +1,8 @@
 
 ''' PEClassifier worker (just a placeholder, not a real classifier at this point) '''
 
+from __future__ import absolute_import
+from __future__ import print_function
 class PEClassifier(object):
     ''' This worker classifies PEFiles as Evil or AOK  (TOY not a real classifier at this point)'''
     dependencies = ['pe_features', 'pe_indicators']
@@ -45,12 +47,12 @@ def test():
     # Execute the worker (unit test)
     worker = PEClassifier()
     output = worker.execute(input_data)
-    print '\n<<< Unit Test >>>'
+    print('\n<<< Unit Test >>>')
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('pe_classifier', md5)
-    print '\n<<< Server Test >>>'
+    print('\n<<< Server Test >>>')
     pprint.pprint(output)
 
 if __name__ == "__main__":

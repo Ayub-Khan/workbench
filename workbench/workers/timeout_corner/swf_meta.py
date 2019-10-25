@@ -1,6 +1,8 @@
 ''' SWFMeta worker: This code heavily utilizes http://github.com/timknip/pyswf, all credit for good
                     stuff goes to them, all credit for bad stuff goes to me. :)
 '''
+from __future__ import absolute_import
+from __future__ import print_function
 from swf.movie import SWF
 try:
     from cStringIO import StringIO
@@ -68,7 +70,7 @@ def test():
     # Execute the worker
     worker = SWFMeta()
     output = worker.execute(input_data)
-    print 'SWFMeta: '
+    print('SWFMeta: ')
     import pprint
     pprint.pprint(output)
 

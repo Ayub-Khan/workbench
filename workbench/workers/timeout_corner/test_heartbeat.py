@@ -1,5 +1,7 @@
 
 ''' Test: This worker tests for robustly handling heartbeat timeout situations '''
+from __future__ import absolute_import
+from __future__ import print_function
 import time
 
 class Test_Heartbeat(object):
@@ -29,19 +31,19 @@ def test():
     workbench.connect("tcp://127.0.0.1:4242")
     
     # Execute the worker (unit test)
-    print '\n<<< Unit Test >>>'
+    print('\n<<< Unit Test >>>')
     worker = Test_Heartbeat()
     output = worker.execute(None)
     import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
-    print '\n<<< Server Test >>>'
+    print('\n<<< Server Test >>>')
     try:
         output = workbench.work_request('test_heartbeat','123')
         raise RuntimeError('Heartbeat did not fail... unexpected, investigate!')
     except zerorpc.exceptions.LostRemote:
-        print 'Heartbeat failed as expected.. so success!'
+        print('Heartbeat failed as expected.. so success!')
 
 if __name__ == "__main__":
     test()

@@ -1,5 +1,7 @@
 
 ''' view worker '''
+from __future__ import absolute_import
+from __future__ import print_function
 import zerorpc
 
 class View(object):
@@ -57,7 +59,7 @@ def test():
     # Execute the worker
     worker = View()
     output = worker.execute(input_data)
-    print '\nView: '
+    print('\nView: ')
     pprint.pprint(output)
 
     # Generate the input data for this worker
@@ -68,7 +70,7 @@ def test():
 
     # Execute the worker
     output = worker.execute(input_data)
-    print '\nView: '
+    print('\nView: ')
     pprint.pprint(output)
 
     # Generate the input data for this worker
@@ -79,7 +81,7 @@ def test():
 
     # Execute the worker
     output = worker.execute(input_data)
-    print '\nView: '
+    print('\nView: ')
     pprint.pprint(output)
 
 if __name__ == "__main__":

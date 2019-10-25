@@ -1,5 +1,7 @@
 
 ''' Unzip worker '''
+from __future__ import absolute_import
+from __future__ import print_function
 import zipfile
 import zerorpc
 import pprint
@@ -51,7 +53,7 @@ def test():
     # Execute the worker (unit test)
     worker = Unzip()
     output = worker.execute(input_data)
-    print '\n<<< Unit Test >>>'
+    print('\n<<< Unit Test >>>')
     pprint.pprint(output)
 
     # For coverage
@@ -59,7 +61,7 @@ def test():
 
     # Execute the worker (server test)
     output = workbench.work_request('unzip', md5)
-    print '\n<<< Server Test >>>'
+    print('\n<<< Server Test >>>')
     pprint.pprint(output)
 
 if __name__ == "__main__":
